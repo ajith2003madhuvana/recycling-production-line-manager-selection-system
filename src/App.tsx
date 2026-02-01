@@ -14,6 +14,7 @@ import {
   Paper,
   ThemeIcon,
 } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { IconTrophy, IconUsers, IconChartBar, IconRecycle } from '@tabler/icons-react';
 import { Leaderboard } from './components/Leaderboard';
@@ -22,6 +23,7 @@ import { SkillHeatmap, ScoreDistribution } from './components/SkillHeatmap';
 import { mockCandidates } from './data/generateCandidates';
 import type { CandidateWithEvaluation, SortField, SortDirection } from './types';
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 function Dashboard() {
   const [sortField, setSortField] = useState<SortField>('rank');
@@ -207,6 +209,7 @@ function Dashboard() {
 function App() {
   return (
     <MantineProvider>
+      <Notifications position="top-right" />
       <Dashboard />
     </MantineProvider>
   );
