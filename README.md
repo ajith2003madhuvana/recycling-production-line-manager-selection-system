@@ -1,73 +1,174 @@
-# Welcome to your Lovable project
+# Recycling Production Line Manager Selection System
 
-## Project info
+A technical hiring demo showcasing a production-quality candidate evaluation system built with modern web technologies.
 
-**URL**: https://lovable.dev/projects/a37d1d0d-556a-4b16-af20-d0385b80500f
+## 🎯 Project Overview
 
-## How can I edit this code?
+This system manages the selection process for Recycling Production Line Manager positions. It features:
 
-There are several ways of editing your application.
+- **AI-powered candidate evaluation** (mocked for demo)
+- **Real-time leaderboard** with sortable rankings
+- **Visual skill heatmap** for score comparison
+- **Detailed candidate profiles** with evaluation breakdowns
 
-**Use Lovable**
+## 🛠 Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a37d1d0d-556a-4b16-af20-d0385b80500f) and start prompting.
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18 + Vite |
+| UI Framework | Mantine v7 |
+| Icons | Tabler Icons |
+| Data Generation | Faker.js |
+| Database Schema | MySQL-compatible SQL |
+| Language | TypeScript |
 
-Changes made via Lovable will be committed automatically to this repo.
+## 📁 Folder Structure
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+├── docs/
+│   └── AI_EVALUATION_PROMPTS.md    # AI prompt templates with rubrics
+├── sql/
+│   ├── 001_schema.sql              # Database schema (tables, triggers, views)
+│   └── 002_sample_queries.sql      # Example queries
+├── src/
+│   ├── components/
+│   │   ├── Leaderboard.tsx         # Top 10 sortable table
+│   │   ├── CandidateCard.tsx       # Profile cards with scores
+│   │   └── SkillHeatmap.tsx        # Visual score comparison
+│   ├── data/
+│   │   └── generateCandidates.ts   # Faker.js data generator
+│   ├── types/
+│   │   └── index.ts                # TypeScript interfaces
+│   └── App.tsx                     # Main dashboard
+└── README.md
 ```
 
-**Edit a file directly in GitHub**
+## 🚀 How to Run
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
 
-**Use GitHub Codespaces**
+- Node.js 18+ or Bun
+- npm, yarn, or bun package manager
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Development
 
-## What technologies are used for this project?
+```bash
+# Install dependencies
+npm install
 
-This project is built with:
+# Start development server
+npm run dev
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Build for production
+npm run build
+```
 
-## How can I deploy this project?
+The app will be available at `http://localhost:5173`
 
-Simply open [Lovable](https://lovable.dev/projects/a37d1d0d-556a-4b16-af20-d0385b80500f) and click on Share -> Publish.
+## 📊 Data Generation
 
-## Can I connect a custom domain to my Lovable project?
+### Candidate Generation (Faker.js)
 
-Yes, you can!
+The `generateCandidates.ts` script creates 40 realistic candidates with:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- **Names**: Generated using Faker.js person module
+- **Experience**: 2-15 years (realistic distribution)
+- **Skills**: 4-8 skills from curated categories:
+  - Technical (Lean Manufacturing, Six Sigma, ISO certifications)
+  - Sustainability (Carbon analysis, EPA regulations)
+  - Leadership (Team management, Mentoring)
+  - Operations (Production planning, Safety)
+- **Background**: Template-based generation with realistic company names
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### Mock AI Evaluation
+
+Scores are deterministically generated based on:
+
+1. **Experience factor** (0-1 scale based on years)
+2. **Skill matching** (keywords boost relevant scores)
+3. **Random variance** (±0.5 for realism)
+
+```typescript
+// Example scoring logic
+crisis_management = 4 + (experience_factor * 3) + skill_matches + random
+```
+
+## 📈 Ranking System
+
+### Score Calculation
+
+```
+total_score = crisis_management + sustainability + team_motivation
+```
+
+- Each category: 1-10 points
+- Maximum total: 30 points
+
+### Ranking Algorithm
+
+1. Sort all candidates by `total_score` DESC
+2. Tie-breaker: `candidate_id` ASC
+3. Assign sequential ranks (1 = best)
+
+### Database Triggers
+
+The SQL schema includes triggers that automatically:
+
+1. Create ranking entries when candidates are inserted
+2. Recalculate all ranks when evaluations change
+
+## 🗄 Database Schema
+
+### Tables
+
+| Table | Purpose |
+|-------|---------|
+| `candidates` | Basic profile information |
+| `evaluations` | AI-generated scores (1-10 each) |
+| `rankings` | Computed total scores and ranks |
+
+### Key Features
+
+- Foreign key constraints with CASCADE delete
+- Check constraints for score validation (1-10)
+- Indexes on frequently queried columns
+- Stored procedure for rank recalculation
+- View for combined leaderboard data
+
+## 🤖 AI Evaluation Prompts
+
+Three structured prompts evaluate candidates on:
+
+1. **Crisis Management** - Emergency response, safety protocols
+2. **Sustainability Knowledge** - Environmental practices, ISO 14001
+3. **Team Motivation** - Leadership, mentoring, conflict resolution
+
+Each prompt includes:
+- Detailed scoring rubric (1-10)
+- Candidate profile placeholder
+- Structured JSON output format
+
+See `docs/AI_EVALUATION_PROMPTS.md` for full prompt templates.
+
+## 🎨 UI Components
+
+### Leaderboard
+- Sortable by any column
+- Click headers to toggle sort direction
+- Visual rank badges (🥇🥈🥉)
+- Color-coded score badges
+
+### Candidate Cards
+- Avatar with initials
+- Skills as badges
+- Progress bars for each score
+- Contact information
+
+### Skill Heatmap
+- Color gradient (red → yellow → green)
+- Hover tooltips with details
+- Score distribution stats
+
+## 📝 License
+
+MIT License - Built for demonstration purposes.
