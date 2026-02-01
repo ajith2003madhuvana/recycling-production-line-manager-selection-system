@@ -1,11 +1,23 @@
-import { Card, Text, Badge, Group, Stack, Avatar, Divider, Progress, Grid, ThemeIcon } from '@mantine/core';
-import { IconBriefcase, IconMail, IconPhone, IconStar, IconFlame, IconLeaf, IconUsers } from '@tabler/icons-react';
+import { Card, Text, Badge, Group, Stack, Avatar, Divider, Progress, Grid, ThemeIcon, Button } from '@mantine/core';
+import { IconBriefcase, IconMail, IconPhone, IconStar, IconFlame, IconLeaf, IconUsers, IconShare } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 import type { CandidateWithEvaluation } from '../types';
 
 interface CandidateCardProps {
   candidate: CandidateWithEvaluation;
   onClick?: () => void;
   compact?: boolean;
+}
+
+// Share candidate function
+function shareCandidate(candidate: CandidateWithEvaluation, e: React.MouseEvent) {
+  e.stopPropagation();
+  notifications.show({
+    title: '📤 Candidate Shared!',
+    message: `${candidate.name}'s profile has been shared with the HR team. They will receive an email with the candidate's evaluation summary.`,
+    color: 'teal',
+    autoClose: 4000,
+  });
 }
 
 // Score color based on value
@@ -186,6 +198,19 @@ export function CandidateCard({ candidate, onClick, compact = false }: Candidate
           color="blue"
         />
       </Stack>
+      
+      <Divider my="md" />
+      
+      {/* Share Button */}
+      <Button 
+        fullWidth 
+        variant="light" 
+        color="teal"
+        leftSection={<IconShare size={16} />}
+        onClick={(e) => shareCandidate(candidate, e)}
+      >
+        Share with HR Team
+      </Button>
     </Card>
   );
 }

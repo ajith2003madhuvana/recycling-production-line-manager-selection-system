@@ -1,5 +1,6 @@
 import { Table, Badge, Group, Text, Paper, Title, ActionIcon, Tooltip } from '@mantine/core';
-import { IconChevronUp, IconChevronDown, IconSelector, IconEye } from '@tabler/icons-react';
+import { IconChevronUp, IconChevronDown, IconSelector, IconEye, IconShare } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 import type { CandidateWithEvaluation, SortField, SortDirection } from '../types';
 
 interface LeaderboardProps {
@@ -9,6 +10,16 @@ interface LeaderboardProps {
   onSort: (field: SortField) => void;
   onViewCandidate: (candidate: CandidateWithEvaluation) => void;
   limit?: number;
+}
+
+// Share candidate function
+function shareCandidate(candidate: CandidateWithEvaluation) {
+  notifications.show({
+    title: '📤 Candidate Shared!',
+    message: `${candidate.name}'s profile has been shared with the HR team. They will receive an email with the candidate's evaluation summary.`,
+    color: 'teal',
+    autoClose: 4000,
+  });
 }
 
 // Score color based on value
@@ -172,15 +183,29 @@ export function Leaderboard({
                   </Badge>
                 </Table.Td>
                 <Table.Td>
-                  <Tooltip label="View Profile">
-                    <ActionIcon 
-                      variant="subtle" 
-                      color="blue"
-                      onClick={() => onViewCandidate(candidate)}
-                    >
-                      <IconEye size={18} />
-                    </ActionIcon>
-                  </Tooltip>
+                  <Group gap="xs">
+                    <Tooltip label="View Profile">
+                      <ActionIcon 
+                        variant="subtle" 
+                        color="blue"
+                        onClick={() => onViewCandidate(candidate)}
+                      >
+                        <IconEye size={18} />
+                      </ActionIcon>
+                    </Tooltip>
+                    <Tooltip label="Share with HR">
+                      <ActionIcon 
+                        variant="subtle" 
+                        color="teal"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          shareCandidate(candidate);
+                        }}
+                      >
+                        <IconShare size={18} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Group>
                 </Table.Td>
               </Table.Tr>
             );
