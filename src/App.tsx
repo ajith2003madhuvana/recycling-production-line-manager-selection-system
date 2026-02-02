@@ -12,7 +12,7 @@ import {
   SimpleGrid,
   Paper,
   ThemeIcon,
-  Grid,
+  Modal,
 } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { IconTrophy, IconUsers, IconChartBar, IconRecycle } from '@tabler/icons-react';
@@ -97,6 +97,10 @@ function Dashboard() {
     setSelectedCandidate(candidate);
   };
   
+  const handleCloseModal = () => {
+    setSelectedCandidate(null);
+  };
+  
   return (
     <AppShell
       header={{ height: 70 }}
@@ -135,79 +139,71 @@ function Dashboard() {
             </Tabs.List>
 
             <Tabs.Panel value="leaderboard">
-              <Grid gutter="lg">
-                {/* Left: Leaderboard + Stats */}
-                <Grid.Col span={{ base: 12, lg: 8 }}>
-                  <Stack gap="lg">
-                    <Leaderboard
-                      candidates={sortedCandidates}
-                      sortField={sortField}
-                      sortDirection={sortDirection}
-                      onSort={handleSort}
-                      onViewCandidate={handleSelectCandidate}
-                      selectedCandidateId={selectedCandidate?.id ?? null}
-                      limit={10}
-                    />
-                    <SimpleGrid cols={{ base: 1, md: 2 }}>
-                      <ScoreDistribution candidates={mockCandidates} />
-                      <Paper shadow="sm" p="lg" radius="md" withBorder>
-                        <Title order={3} mb="md">🎯 Quick Stats</Title>
-                        <Stack gap="sm">
-                          <Group justify="space-between">
-                            <Text size="sm">Total Candidates</Text>
-                            <Badge color="blue">{mockCandidates.length}</Badge>
-                          </Group>
-                          <Group justify="space-between">
-                            <Text size="sm">Avg Experience</Text>
-                            <Badge color="grape">
-                              {(mockCandidates.reduce((sum, c) => sum + c.years_experience, 0) / mockCandidates.length).toFixed(1)} years
-                            </Badge>
-                          </Group>
-                          <Group justify="space-between">
-                            <Text size="sm">Top Score</Text>
-                            <Badge color="green">{mockCandidates[0].ranking.total_score}/30</Badge>
-                          </Group>
-                          <Group justify="space-between">
-                            <Text size="sm">Avg Score</Text>
-                            <Badge color="violet">
-                              {(mockCandidates.reduce((sum, c) => sum + c.ranking.total_score, 0) / mockCandidates.length).toFixed(1)}/30
-                            </Badge>
-                          </Group>
-                        </Stack>
-                      </Paper>
-                    </SimpleGrid>
-                  </Stack>
-                </Grid.Col>
-                
-                {/* Right: Profile Panel */}
-                <Grid.Col span={{ base: 12, lg: 4 }}>
-                  <CandidateProfilePanel candidate={selectedCandidate} />
-                </Grid.Col>
-              </Grid>
+              <Stack gap="lg">
+                <Leaderboard
+                  candidates={sortedCandidates}
+                  sortField={sortField}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                  onViewCandidate={handleSelectCandidate}
+                  selectedCandidateId={selectedCandidate?.id ?? null}
+                  limit={10}
+                />
+                <SimpleGrid cols={{ base: 1, md: 2 }}>
+                  <ScoreDistribution candidates={mockCandidates} />
+                  <Paper shadow="sm" p="lg" radius="md" withBorder>
+                    <Title order={3} mb="md">🎯 Quick Stats</Title>
+                    <Stack gap="sm">
+                      <Group justify="space-between">
+                        <Text size="sm">Total Candidates</Text>
+                        <Badge color="blue">{mockCandidates.length}</Badge>
+                      </Group>
+                      <Group justify="space-between">
+                        <Text size="sm">Avg Experience</Text>
+                        <Badge color="grape">
+                          {(mockCandidates.reduce((sum, c) => sum + c.years_experience, 0) / mockCandidates.length).toFixed(1)} years
+                        </Badge>
+                      </Group>
+                      <Group justify="space-between">
+                        <Text size="sm">Top Score</Text>
+                        <Badge color="green">{mockCandidates[0].ranking.total_score}/30</Badge>
+                      </Group>
+                      <Group justify="space-between">
+                        <Text size="sm">Avg Score</Text>
+                        <Badge color="violet">
+                          {(mockCandidates.reduce((sum, c) => sum + c.ranking.total_score, 0) / mockCandidates.length).toFixed(1)}/30
+                        </Badge>
+                      </Group>
+                    </Stack>
+                  </Paper>
+                </SimpleGrid>
+              </Stack>
             </Tabs.Panel>
 
             <Tabs.Panel value="candidates">
-              <Grid gutter="lg">
-                {/* Left: All Candidates Table */}
-                <Grid.Col span={{ base: 12, lg: 8 }}>
-                  <AllCandidatesTable 
-                    candidates={sortedCandidates}
-                    onSelectCandidate={handleSelectCandidate}
-                    selectedCandidateId={selectedCandidate?.id ?? null}
-                  />
-                </Grid.Col>
-                
-                {/* Right: Profile Panel */}
-                <Grid.Col span={{ base: 12, lg: 4 }}>
-                  <CandidateProfilePanel candidate={selectedCandidate} />
-                </Grid.Col>
-              </Grid>
+              <AllCandidatesTable 
+                candidates={sortedCandidates}
+                onSelectCandidate={handleSelectCandidate}
+                selectedCandidateId={selectedCandidate?.id ?? null}
+              />
             </Tabs.Panel>
 
             <Tabs.Panel value="heatmap">
               <SkillHeatmap candidates={sortedCandidates} maxCandidates={40} />
             </Tabs.Panel>
           </Tabs>
+          
+          {/* Candidate Profile Modal */}
+          <Modal
+            opened={selectedCandidate !== null}
+            onClose={handleCloseModal}
+            size="lg"
+            title={null}
+            padding={0}
+            radius="md"
+          >
+            <CandidateProfilePanel candidate={selectedCandidate} />
+          </Modal>
         </Container>
       </AppShell.Main>
     </AppShell>
