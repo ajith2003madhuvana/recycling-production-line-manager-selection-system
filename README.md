@@ -2,6 +2,12 @@
 
 A technical hiring demo showcasing a production-quality candidate evaluation system built with modern web technologies.
 
+## Development Notes
+
+This project was initially scaffolded and iterated using AI-assisted tooling (Lovable).
+All features, database design, AI prompts, and dashboard functionality were manually reviewed,
+validated, and refined to fully align with the assignment requirements.
+
 ## 🎯 Project Overview
 
 This system manages the selection process for Recycling Production Line Manager positions. It features:
