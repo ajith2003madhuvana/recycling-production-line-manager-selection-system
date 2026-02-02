@@ -1,206 +1,174 @@
-Recycling Production Line Manager Selection System
+# Recycling Production Line Manager Selection System
 
-A production-quality technical demo showcasing a structured, data-driven system for evaluating and ranking candidates for a Recycling Production Line Manager role.
+A technical hiring demo showcasing a production-quality candidate evaluation system built with modern web technologies.
 
-Development Notes
+## 🎯 Project Overview
 
-This project was developed using AI-assisted tooling (Lovable) to accelerate initial scaffolding and UI iteration, enabling more focused time investment on system design, data modeling, and evaluation logic.
+This system manages the selection process for Recycling Production Line Manager positions. It features:
 
-All core aspects of the project — including the database schema, AI evaluation prompts, ranking logic, and dashboard behavior — were manually reviewed, refined, and validated to ensure full alignment with the assignment requirements and clear technical ownership.
+- **AI-powered candidate evaluation** (mocked for demo)
+- **Real-time leaderboard** with sortable rankings
+- **Visual skill heatmap** for score comparison
+- **Detailed candidate profiles** with evaluation breakdowns
 
-🎯 Project Overview
+## 🛠 Tech Stack
 
-The system simulates a real-world hiring workflow for operational leadership roles in the recycling domain. It provides a transparent and explainable approach to candidate evaluation using structured scoring and visual insights.
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18 + Vite |
+| UI Framework | Mantine v7 |
+| Icons | Tabler Icons |
+| Data Generation | Faker.js |
+| Database Schema | MySQL-compatible SQL |
+| Language | TypeScript |
 
-Key Features
+## 📁 Folder Structure
 
-AI-based candidate evaluation (mocked for demonstration)
-
-Top 10 leaderboard with sortable rankings
-
-Skill heatmap for comparative score analysis
-
-Detailed candidate profiles with score breakdowns
-
-🛠 Tech Stack
-Layer	Technology
-Frontend	React 18 + Vite
-UI Framework	Mantine
-Icons	Tabler Icons
-Data Generation	Faker.js
-Database Design	MySQL-compatible SQL
-Language	TypeScript
-📁 Folder Structure
+```
 ├── docs/
-│   └── AI_EVALUATION_PROMPTS.md     # AI prompt templates with scoring rubrics
+│   └── AI_EVALUATION_PROMPTS.md    # AI prompt templates with rubrics
 ├── sql/
-│   ├── 001_schema.sql               # Tables, triggers, views, procedures
-│   └── 002_sample_queries.sql       # Sample analytical queries
+│   ├── 001_schema.sql              # Database schema (tables, triggers, views)
+│   └── 002_sample_queries.sql      # Example queries
 ├── src/
 │   ├── components/
-│   │   ├── Leaderboard.tsx          # Top 10 sortable leaderboard
-│   │   ├── CandidateCard.tsx        # Candidate profile cards
-│   │   └── SkillHeatmap.tsx         # Visual skill comparison
+│   │   ├── Leaderboard.tsx         # Top 10 sortable table
+│   │   ├── CandidateCard.tsx       # Profile cards with scores
+│   │   └── SkillHeatmap.tsx        # Visual score comparison
 │   ├── data/
-│   │   └── generateCandidates.ts    # Faker.js candidate generator
+│   │   └── generateCandidates.ts   # Faker.js data generator
 │   ├── types/
-│   │   └── index.ts                 # Shared TypeScript interfaces
-│   └── App.tsx                      # Main application entry
+│   │   └── index.ts                # TypeScript interfaces
+│   └── App.tsx                     # Main dashboard
 └── README.md
+```
 
-🚀 How to Run
-Prerequisites
+## 🚀 How to Run
 
-Node.js 18+
+### Prerequisites
 
-npm (or compatible package manager)
+- Node.js 18+ or Bun
+- npm, yarn, or bun package manager
 
-Setup
+### Development
+
+```bash
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 
-
-The application runs locally at:
-
-http://localhost:5173
-
-Production Build
+# Build for production
 npm run build
+```
 
-📊 Data Generation
-Candidate Generation (Faker.js)
+The app will be available at `http://localhost:5173`
 
-The system generates 40 realistic candidate profiles, including:
+## 📊 Data Generation
 
-Experience: 2–15 years
+### Candidate Generation (Faker.js)
 
-Skills: 4–8 per candidate, covering:
+The `generateCandidates.ts` script creates 40 realistic candidates with:
 
-Operations (Lean Manufacturing, Safety)
+- **Names**: Generated using Faker.js person module
+- **Experience**: 2-15 years (realistic distribution)
+- **Skills**: 4-8 skills from curated categories:
+  - Technical (Lean Manufacturing, Six Sigma, ISO certifications)
+  - Sustainability (Carbon analysis, EPA regulations)
+  - Leadership (Team management, Mentoring)
+  - Operations (Production planning, Safety)
+- **Background**: Template-based generation with realistic company names
 
-Sustainability (ISO 14001, Environmental Compliance)
+### Mock AI Evaluation
 
-Leadership (Team Management, Mentoring)
+Scores are deterministically generated based on:
 
-Background summaries: Template-based, role-relevant narratives
+1. **Experience factor** (0-1 scale based on years)
+2. **Skill matching** (keywords boost relevant scores)
+3. **Random variance** (±0.5 for realism)
 
-This approach ensures consistency while maintaining realism.
+```typescript
+// Example scoring logic
+crisis_management = 4 + (experience_factor * 3) + skill_matches + random
+```
 
-🤖 Mock AI Evaluation Logic
+## 📈 Ranking System
 
-AI evaluations are deterministic and explainable, based on:
+### Score Calculation
 
-Experience factor (scaled from years of experience)
-
-Skill relevance matching
-
-Minor controlled variance for realism
-
-Example logic:
-
-score = 4 + (experience_factor * 3) + skill_matches
-
-
-Each candidate receives scores for:
-
-Crisis Management
-
-Sustainability Knowledge
-
-Team Motivation
-
-📈 Ranking System
-Score Formula
+```
 total_score = crisis_management + sustainability + team_motivation
+```
 
+- Each category: 1-10 points
+- Maximum total: 30 points
 
-Each category scored from 1–10
+### Ranking Algorithm
 
-Maximum possible score: 30
+1. Sort all candidates by `total_score` DESC
+2. Tie-breaker: `candidate_id` ASC
+3. Assign sequential ranks (1 = best)
 
-Ranking Rules
+### Database Triggers
 
-Sort by total_score (descending)
+The SQL schema includes triggers that automatically:
 
-Tie-break using candidate_id (ascending)
+1. Create ranking entries when candidates are inserted
+2. Recalculate all ranks when evaluations change
 
-Assign sequential ranks (Rank 1 = highest score)
+## 🗄 Database Schema
 
-Database Automation
+### Tables
 
-The MySQL schema includes:
+| Table | Purpose |
+|-------|---------|
+| `candidates` | Basic profile information |
+| `evaluations` | AI-generated scores (1-10 each) |
+| `rankings` | Computed total scores and ranks |
 
-Triggers to auto-update rankings on evaluation changes
+### Key Features
 
-Stored procedure for rank recalculation
+- Foreign key constraints with CASCADE delete
+- Check constraints for score validation (1-10)
+- Indexes on frequently queried columns
+- Stored procedure for rank recalculation
+- View for combined leaderboard data
 
-View for combined leaderboard access
+## 🤖 AI Evaluation Prompts
 
-🗄 Database Schema Overview
-Tables
-Table	Description
-candidates	Candidate profile data
-evaluations	AI-generated evaluation scores
-rankings	Computed total scores and ranks
-Design Highlights
+Three structured prompts evaluate candidates on:
 
-Foreign key constraints with cascade deletes
-
-Score validation using CHECK constraints
-
-Indexed columns for efficient leaderboard queries
-
-View for simplified dashboard consumption
-
-🤖 AI Evaluation Prompts
-
-Three structured prompts are used:
-
-Crisis Management
-
-Sustainability Knowledge
-
-Team Motivation
+1. **Crisis Management** - Emergency response, safety protocols
+2. **Sustainability Knowledge** - Environmental practices, ISO 14001
+3. **Team Motivation** - Leadership, mentoring, conflict resolution
 
 Each prompt includes:
+- Detailed scoring rubric (1-10)
+- Candidate profile placeholder
+- Structured JSON output format
 
-Clear evaluation criteria
+See `docs/AI_EVALUATION_PROMPTS.md` for full prompt templates.
 
-Detailed 1–10 scoring rubric
+## 🎨 UI Components
 
-Structured JSON output format
+### Leaderboard
+- Sortable by any column
+- Click headers to toggle sort direction
+- Visual rank badges (🥇🥈🥉)
+- Color-coded score badges
 
-Full prompt definitions are available in:
+### Candidate Cards
+- Avatar with initials
+- Skills as badges
+- Progress bars for each score
+- Contact information
 
-docs/AI_EVALUATION_PROMPTS.md
+### Skill Heatmap
+- Color gradient (red → yellow → green)
+- Hover tooltips with details
+- Score distribution stats
 
-🎨 UI Components
-Leaderboard
+## 📝 License
 
-Sortable columns
-
-Visual rank indicators (🥇🥈🥉)
-
-Color-coded score badges
-
-Candidate Cards
-
-Profile overview
-
-Skill badges
-
-Score visualizations
-
-Contact metadata (demo)
-
-Skill Heatmap
-
-Gradient-based score visualization
-
-Comparative insights across candidates
-
-Hover-based detail exploration
-
-📄 License
-
-MIT License — created for demonstration and evaluation purposes
+MIT License - Built for demonstration purposes.
