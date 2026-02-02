@@ -196,8 +196,13 @@ export function generateCandidates(count: number = 40): CandidateWithEvaluation[
     });
   }
   
-  // Calculate ranks based on total score
-  candidates.sort((a, b) => b.ranking.total_score - a.ranking.total_score);
+  // Calculate ranks based on total score DESC, then ID ASC for tie-breaker
+  candidates.sort((a, b) => {
+    const scoreDiff = b.ranking.total_score - a.ranking.total_score;
+    if (scoreDiff !== 0) return scoreDiff;
+    // Tie-breaker: candidate ID ascending
+    return a.id - b.id;
+  });
   candidates.forEach((c, index) => {
     c.ranking.rank = index + 1;
   });

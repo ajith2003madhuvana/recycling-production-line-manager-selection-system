@@ -9,6 +9,7 @@ interface LeaderboardProps {
   sortDirection: SortDirection;
   onSort: (field: SortField) => void;
   onViewCandidate: (candidate: CandidateWithEvaluation) => void;
+  selectedCandidateId: number | null;
   limit?: number;
 }
 
@@ -83,6 +84,7 @@ export function Leaderboard({
   sortDirection, 
   onSort, 
   onViewCandidate,
+  selectedCandidateId,
   limit = 10 
 }: LeaderboardProps) {
   const displayCandidates = candidates.slice(0, limit);
@@ -149,8 +151,16 @@ export function Leaderboard({
         <Table.Tbody>
           {displayCandidates.map((candidate) => {
             const rankInfo = getRankBadge(candidate.ranking.rank);
+            const isSelected = candidate.id === selectedCandidateId;
             return (
-              <Table.Tr key={candidate.id}>
+              <Table.Tr 
+                key={candidate.id}
+                onClick={() => onViewCandidate(candidate)}
+                style={{ 
+                  cursor: 'pointer',
+                  backgroundColor: isSelected ? 'var(--mantine-color-blue-light)' : undefined,
+                }}
+              >
                 <Table.Td>
                   <Badge color={rankInfo.color} variant="filled" size="lg">
                     {rankInfo.label}
